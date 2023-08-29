@@ -9,7 +9,6 @@ public class TryAgain : MonoBehaviour
     {
         SceneManager.LoadScene("The Game");
     }
-
     public void QuitGame()
     {
         Application.Quit();

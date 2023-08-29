@@ -11,11 +11,10 @@ public class Player : MonoBehaviour
     public TextMeshProUGUI scoreText;
     private int Score = 0;
 
-    private bool isGrounded;
+    private bool isJump;
     private Rigidbody2D rigidBody;
     private float deltaX;
     private Vector2 movement;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -24,19 +23,11 @@ public class Player : MonoBehaviour
         {
             Debug.LogError($"Failed to start. {rigidBody.GetType()} not found!");
         }
-        isGrounded = true;
         scoreText.text = "Score " + Score;
     }
-
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            isGrounded = false;
-        }
-
         if (Input.GetKey(KeyCode.RightArrow))
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
@@ -46,23 +37,22 @@ public class Player : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, 180, 0);
         }
     }
-
-    private void FixedUpdate()
+    private void Update()
     {
         deltaX = Input.GetAxis("Horizontal");
-
         movement = new Vector2(deltaX * speed * Time.fixedDeltaTime, rigidBody.velocity.y);
-
         rigidBody.velocity = movement;
-
+        if (Input.GetKeyDown(KeyCode.Space) && !isJump)
+        {
+            rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            isJump = true;
+        }
     }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag.Equals("Ground"))
+        if (collision.gameObject.CompareTag("Ground"))
         {
-            Ground();
-
+            isJump = false;
         }
         if (collision.gameObject.tag.Equals("Coin"))
         {
@@ -71,20 +61,10 @@ public class Player : MonoBehaviour
             Debug.Log(Score);
             scoreText.text = "Score " + Score;
         }
-
-
         if (collision.gameObject.tag.Equals("Cup"))
         {
             SceneManager.LoadScene("Victory");
 
         }
-
-    }
-
-
-
-    void Ground()
-    {
-        isGrounded = true;
     }
 }

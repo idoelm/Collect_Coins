@@ -5,9 +5,9 @@ public class Enemy : MonoBehaviour
 {
     private Rigidbody2D rb;
     Transform tr;
-    public int speed = 7;
+    [SerializeField] int speed = 7;
     private bool right = true;
-    public GameObject playerDead;
+    [SerializeField] GameObject playerDead;
     Vector3 LoseScreenPosition = new Vector3(0.0889f, 0.0902f, 0f);
     private void Start()
     {
@@ -15,7 +15,6 @@ public class Enemy : MonoBehaviour
         tr = GetComponent<Transform>();
         rb.velocity = transform.right * speed;
     }
-
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag.Equals("Bullet"))
@@ -24,7 +23,6 @@ public class Enemy : MonoBehaviour
             Destroy(collision.gameObject);
             Destroy(gameObject);
         }
-
         if (collision.gameObject.tag.Equals("Player"))
         {
             //  Debug.Log("Player");
